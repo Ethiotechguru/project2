@@ -2,9 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const ejsLayouts = require('express-ejs-layouts');
 //module allow use of sessions
+var path=require('path');
 const session = require('express-session');
 const passport = require('./config/passportConfig')
-
+const multer = require('multer');
+const cloudinary = require('cloudinary');
+const upload = multer({dest: './uploads'});
 //module for flash messages
 const flash = require('connect-flash');
 const isLoggedIn = require('./middleware/isLoggedIn')
@@ -60,16 +63,28 @@ app.use(function(req, res, next){
   next();
 })
 
+const pics = [];
 
 app.get('/', function(req, res) {
-  res.render('index');
+  console.log(pics + 'is not here');
+  res.render('index',  {pics:pics});
 });
 
 app.get('/profile', isLoggedIn, function(req, res) {
   res.render('profile');
 });
+app.post('/', upload.single('myFile'), function(req, res){
+  cloudinary.uploader.upload(req.file.path, function(result){ //!why do we need a function when uploading? async request
+    var imgUrl = cloudinary.url(result.public_id);
+    pics.push(imgUrl)
+    res.redirect('/');
+  });
+})
 
 app.use('/auth', require('./controllers/auth'));
+app.use('/authors', require('./routes/authors'));
+app.use('/posts', require('./routes/posts'));
+app.use('/tags', require('./routes/tags'));
 
 var server = app.listen(process.env.PORT || 3000);
 

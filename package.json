@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
+    "cloudinary": "^1.14.0",
     "connect-flash": "^0.1.1",
     "connect-session-sequelize": "^6.0.0",
     "dotenv": "^8.0.0",
@@ -32,9 +33,23 @@
     "express-session": "^1.16.2",
     "helmet": "^3.18.0",
     "morgan": "^1.9.1",
+    "multer": "^1.4.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg": "^7.11.0",
     "sequelize": "^5.8.12"
-  }
+  },
+  "description": "Express authentication template using Passport + flash messages + custom middleware",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ethiotechguru/project2.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/Ethiotechguru/project2/issues"
+  },
+  "homepage": "https://github.com/Ethiotechguru/project2#readme"
 }

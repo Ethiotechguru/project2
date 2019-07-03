@@ -5,16 +5,17 @@ const router = express.Router();
 
 //* GET /post/new - send a form for adding a new post
 router.get('/new', function(req, res){
-    db.author.findAll()
-        .then(function(authors){
-            res.render('posts/new', {authors:authors});
+    db.user.findAll()
+        .then(function(users){
+            res.render('posts/new', {users:users});
         });
 });
-//* GET /authors/:id - returns the selected post
+//* GET /users/:id - returns the selected post
 router.get('/:id', function(req, res){
     db.post.findOne({
         where: {id:parseInt(req.params.id)},
-        include: [db.author, db.comment, db.tag]
+        include: [db.user]
+        //include: [db.user, db.comment]
     }).then(function(post){
         res.render('posts/show', {post:post})
         });
@@ -33,9 +34,9 @@ router.post('/', function(req, res){
     //         });
     //     });
     db.post.create({
-        title: req.body.title,
-        content:req.body.content,
-        authorId: parseInt(req.body.authorId)
+        title: req.body.caption,
+        content:req.body.image,
+        userId: parseInt(req.body.userId)
     }).then(function(post){
         res.redirect('/');
     })

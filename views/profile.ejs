@@ -1,3 +1,17 @@
 <h2>Profile Page</h2>
 <p> Hello<%= currentUser.name %></p>
 <a href="/">Home</a>
+<h1>File Upload</h1>
+<form enctype="multipart/form-data" action="/" method="POST">
+  <input type="file" name="myFile">
+  <input type="submit">
+</form>
+
+<% pics.forEach(function(pic) {%>
+        <% if(typeof pic == 'string' && pic ){ %>
+        <img style="max-width: 100%;" src="<%= pic %>">
+   
+        <%}else{%>
+        <p>You need to Upload</p>
+        <%}%>
+<%})%>

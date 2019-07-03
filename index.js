@@ -67,22 +67,23 @@ const pics = [];
 
 app.get('/', function(req, res) {
   console.log(pics + 'is not here');
-  res.render('index',  {pics:pics});
+  res.render('index');
 });
 
 app.get('/profile', isLoggedIn, function(req, res) {
-  res.render('profile');
+  res.render('profile', {pics:pics});
+  console.log(pics);
 });
 app.post('/', upload.single('myFile'), function(req, res){
   cloudinary.uploader.upload(req.file.path, function(result){ //!why do we need a function when uploading? async request
     var imgUrl = cloudinary.url(result.public_id);
     pics.push(imgUrl)
-    res.redirect('/');
+    res.redirect('/profile');
   });
 })
 
 app.use('/auth', require('./controllers/auth'));
-app.use('/authors', require('./routes/authors'));
+app.use('/authors', require('./routes/users'));
 app.use('/posts', require('./routes/posts'));
 app.use('/tags', require('./routes/tags'));
 

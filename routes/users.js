@@ -9,6 +9,11 @@ router.get('/', function(req, res){
         res.render('users/index', {users:users});
     });
 })
+router.get('/', function(req, res){
+    db.user.findAll().then(function(users){
+        res.render('index', {users:users});
+    });
+})
 //* GET /users/new - send a form for adding a new user
 //! GET /users/new - send a form for adding a new user
 router.get('/new', function(req, res){

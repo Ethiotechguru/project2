@@ -1,17 +1,34 @@
 <h2>Profile Page</h2>
-<p> Hello<%= currentUser.name %></p>
+<p> Hello <%= currentUser.name %></p>
 <a href="/">Home</a>
-<h1>File Upload</h1>
+<h3>File Upload</h3>
 <form enctype="multipart/form-data" action="/" method="POST">
+  <p><input type="text" name="caption" placeholder ='caption it'></p>
   <input type="file" name="myFile">
   <input type="submit">
 </form>
 
-<% pics.forEach(function(pic) {%>
-        <% if(typeof pic == 'string' && pic ){ %>
-        <img style="max-width: 100%;" src="<%= pic %>">
-   
+<% pics.forEach(function(pic){%>
+        <% if(typeof pic.image == 'string' && pic.image ){ %>
+        <img style="max-width: 100%;" src="<%= pic.image %>">
+        <p><%= pic.caption %></p>
         <%}else{%>
         <p>You need to Upload</p>
         <%}%>
+      <form action="/comments/<%=pic.id%>/comments" method='POST'>
+        <!--<p><input type="text" name="name" placeholder='Enter Your name'></p>-->
+        <textarea type="text" name="comment" placeholder ='Enter Your comment'></textarea>
+        <input type="submit" value= 'comment'>
+      </form>
+
+      <% pic.comments.forEach(function(comment){ %>
+      
+        <h2><%= user.name%></h2>
+        <p><%= comment.comment%></p>
+       
+
+      <%})%>
 <%})%>
+
+
+<a href="/">&larr;Back Home</a>

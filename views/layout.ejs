@@ -4,14 +4,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Authentication</title>
-
+    <link href="https://fonts.googleapis.com/css?family=Niconne&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap" rel="stylesheet">
     <!-- Latest compiled and minified CSS & JS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   </head>
   <body>
+  <div class='jumbotron'>
+    <div class='container'>
+      <h2>Home</h2>
+      <% if (!currentUser) { %>
+      <a class= 'btn btn-primary' href="/auth/signup">Signup</a>
+      <!--<a href="/auth/login">Login</a>-->
+      <a class= 'btn btn-primary' href="/auth/login">Login</a>
+      <% } else { %>
+      <a class= 'btn btn-primary' href="/auth/logout">Logout</a>
+      
+      <a class= 'btn btn-primary' href="/users"><%= currentUser.name%></a>
+      <% } %>
+    </div>
+  </div>
     <div class="container">
-      <h1>Authentication</h1>
-      <%- JSON.stringify(currentUser) %>
       <% include partials/alerts %>
       <%- body %>
     </div>

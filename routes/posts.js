@@ -1,63 +1,75 @@
 const express = require('express');
 const db = require('../models');
 const router = express.Router();
+const multer = require('multer');
+const cloudinary = require('cloudinary');
+const upload = multer({dest: './uploads'});
+const isLoggedIn = require('../middleware/isLoggedIn')
 
-
-//* GET /post/new - send a form for adding a new post
-router.get('/new', function(req, res){
-    db.user.findAll()
-        .then(function(users){
-            res.render('posts/new', {users:users});
-        });
-});
-//* GET /users/:id - returns the selected post
-router.get('/:id', function(req, res){
-    db.post.findOne({
-        where: {id:parseInt(req.params.id)},
-        include: [db.user]
-        //include: [db.user, db.comment]
-    }).then(function(post){
-        res.render('posts/show', {post:post})
-        });
-});
-//* POST /posts - create a new post record;
-
-router.post('/', function(req, res){
-    // db.author.findByPk(parseInt(req.body.authorId))
-    //     then(function(author){
-    //         author.createPost({
-    //             title:req.body.title,
-    //             content:req.body.content,
-    //             authorId:req.body.authorId
-    //         }).then(function(post){
-    //             res.redirect('/posts');
-    //         });
-    //     });
-    db.post.create({
-        title: req.body.caption,
-        content:req.body.image,
-        userId: parseInt(req.body.userId)
-    }).then(function(post){
-        res.redirect('/');
+router.get('profile/users/:id', isLoggedIn, function(req, res) {
+    db.user.findOne({
+      where: {id: parseInt(req.params.id)},
+      include: [db.post]
+    }).then( function(user){
+    //   console.log(user)
+      db.post.findAll({
+          where: {
+              userId: user.id,
+          },
+          include : [db.comment]
+        }).then(function(pics) {
+        //   console.log(pics[0].comments);
+          res.render('profile', {user, pics });
+      })
     })
-})
-router.post('/:id/comments', function(req, res){
-    db.post.findByPk(parseInt(req.params.id))
-        .then(function(post){
-            post.createComment({
-                content: req.body.content,
-                name: req.body.name,
-            }).then(function(comment){
-                res.redirect('/posts/' + req.params.id);
-            })
-        })
-    // db.comment.create({
-    //     content: req.body.content,
-    //     name: req.body.name,
-    //     postId: req.body.postId
-    // }).then(function(comment){
-    //     res.redirect(`/posts/${req.body.postId}`);
-    // })
-})
+  });
+router.get('/users/:id', isLoggedIn, function(req, res) {
+    db.user.findOne({
+      where: {id: parseInt(req.params.id)},
+      include: [db.post]
+    }).then( function(user){
+    //   console.log(user)
+      db.post.findAll({
+          where: {
+              userId: user.id,
+          },
+          include : [db.comment]
+        }).then(function(pics) {
+        //   console.log(pics[0].comments);
+          res.render('users/show', {user, pics });
+      })
+    })
+  });
+  router.delete('/posts/:id', isLoggedIn, function(req, res) {
+    db.user.findOne({
+      where: {id:req.user.id},
+      include: [db.post]
+    }).then( function(user){
+    //   console.log(user)
+      db.post.destroy({
+          where: {
+              id:req.params.id,
+              userId: user.id
+          }
+        }).then(function(pics) {
+          res.redirect('users/show');
+      })
+    })
+  });
+  
+  router.post('/', upload.single('myFile'), function(req, res){
+    cloudinary.uploader.upload(req.file.path, function(result){ //!why do we need a function when uploading? async request
+      var imgUrl = cloudinary.url(result.public_id);
+      db.post.create({
+        image: imgUrl,
+        caption: req.body.caption,
+        userId: req.user.id
+      }).then(function(post) {
+        res.redirect('/users/' + req.user.id)
+      })
+      // pics.push(imgUrl)
+      // res.redirect('/users/:id');
+    });
+  })
 
 module.exports = router;

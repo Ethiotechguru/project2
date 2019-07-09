@@ -8,6 +8,7 @@ const passport = require('./config/passportConfig')
 const multer = require('multer');
 const cloudinary = require('cloudinary');
 const upload = multer({dest: './uploads'});
+const methodOverride = require('method-override')
 //module for flash messages
 const flash = require('connect-flash');
 const isLoggedIn = require('./middleware/isLoggedIn')
@@ -16,6 +17,7 @@ const helmet = require('helmet');
 // This is only used by session store
 
 const db = require('./models');
+const users = require('./routes/users');
 
 
 const app = express();
@@ -28,7 +30,7 @@ const sessionStore = new SequelizeStore({
     db:db.sequelize,
     expiration: 1000 * 60 * 30
 });
-
+app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 
 app.use(require('morgan')('dev'));
@@ -63,29 +65,17 @@ app.use(function(req, res, next){
   next();
 })
 
-const pics = [];
 
 app.get('/', function(req, res) {
-  console.log(pics + 'is not here');
+  // res.send('index', pics + 'is not here');
   res.render('index');
 });
 
-app.get('/profile', isLoggedIn, function(req, res) {
-  res.render('profile', {pics:pics});
-  console.log(pics);
-});
-app.post('/', upload.single('myFile'), function(req, res){
-  cloudinary.uploader.upload(req.file.path, function(result){ //!why do we need a function when uploading? async request
-    var imgUrl = cloudinary.url(result.public_id);
-    pics.push(imgUrl)
-    res.redirect('/profile');
-  });
-})
 
+app.use('/comments', require('./routes/comments'));
+app.use('/', require('./routes/posts'));
 app.use('/auth', require('./controllers/auth'));
-app.use('/authors', require('./routes/users'));
-app.use('/posts', require('./routes/posts'));
-app.use('/tags', require('./routes/tags'));
+app.use('/users', require('./routes/users'));
 
 var server = app.listen(process.env.PORT || 3000);
 

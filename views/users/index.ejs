@@ -1,0 +1,17 @@
+<h1>Signed as <%= currentUser.name%></h1>
+
+    <div>
+        <h2><a href= '/users/<%= currentUser.id %>'><%= currentUser.name %></a></h2>
+        
+    </div>
+    <%if(users.name !== currentUser){%>
+ <%users.forEach(function(user){%>
+    
+    <h2><a href= '/users/<%= user.id %>'><%= user.name %></a></h2>
+   
+ <%})%> 
+ <%}%>
+
+<hr/>
+
+<a href="/">&larr; Back Home</a>

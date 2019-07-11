@@ -20,8 +20,12 @@
         <%}%>
 
         <!--Delete form -->
-      <form method="POST" action= "/posts/<%= pic.id %>/?_method=DELETE">
+      <form method="POST" action= "/users/<%= pic.id %>/?_method=DELETE">
         <input type="submit" value="DELETE">
+      </form>
+      <form method="POST" action= "/users/<%= pic.id %>/?_method=PUT">
+       <input type="hidden" name="_method" value="PUT">
+        <input type="submit" value="Update">
       </form>
 
      <!--comment form -->
@@ -45,9 +49,6 @@
         </div>
         </div>
       </div>
-     
-
-      
 <%})%>
 
 

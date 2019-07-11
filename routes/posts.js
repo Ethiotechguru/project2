@@ -6,23 +6,23 @@ const cloudinary = require('cloudinary');
 const upload = multer({dest: './uploads'});
 const isLoggedIn = require('../middleware/isLoggedIn')
 
-router.get('profile/users/:id', isLoggedIn, function(req, res) {
-    db.user.findOne({
-      where: {id: parseInt(req.params.id)},
-      include: [db.post]
-    }).then( function(user){
-    //   console.log(user)
-      db.post.findAll({
-          where: {
-              userId: user.id,
-          },
-          include : [db.comment]
-        }).then(function(pics) {
-        //   console.log(pics[0].comments);
-          res.render('profile', {user, pics });
-      })
-    })
-  });
+// router.get('profile/users/:id', isLoggedIn, function(req, res) {
+//     db.user.findOne({
+//       where: {id: parseInt(req.params.id)},
+//       include: [db.post]
+//     }).then( function(user){
+//     //   console.log(user)
+//       db.post.findAll({
+//           where: {
+//               userId: user.id,
+//           },
+//           include : [db.comment]
+//         }).then(function(pics) {
+//         //   console.log(pics[0].comments);
+//           res.render('profile', {user, pics });
+//       })
+//     })
+//   });
 router.get('/users/:id', isLoggedIn, function(req, res) {
     db.user.findOne({
       where: {id: parseInt(req.params.id)},
@@ -36,11 +36,11 @@ router.get('/users/:id', isLoggedIn, function(req, res) {
           include : [db.comment]
         }).then(function(pics) {
         //   console.log(pics[0].comments);
-          res.render('users/show', {user, pics });
+          res.render('users/show', {user, pics });//!check this out i think this supposed to be pic not pics
       })
     })
   });
-  router.delete('/posts/:id', isLoggedIn, function(req, res) {
+  router.delete('/users/:id', isLoggedIn, function(req, res) {
     db.user.findOne({
       where: {id:req.user.id},
       include: [db.post]
@@ -52,10 +52,64 @@ router.get('/users/:id', isLoggedIn, function(req, res) {
               userId: user.id
           }
         }).then(function(pics) {
-          res.redirect('users/show');
+          res.redirect('/users');
       })
     })
   });
+
+  router.put('/users/:id', isLoggedIn, function(req, res) {
+    db.user.findOne({
+      where: {id:req.user.id},
+      include: [db.post]
+    }).then( function(user){
+    //   console.log(user)
+      db.post.update({
+        caption: req.body.caption,
+        userId: parseInt(req.user.id)
+      },{
+      where:{
+            id:req.params.id,
+            userId: user.id
+            }
+        }).then(function(pics) {
+          res.redirect('/users/' + req.user.id);
+      })
+    })
+  })
+
+//   router.put('/posts/:id', isLoggedIn, function(req, res) {
+//     db.user.findOne({
+//       where: {id:req.user.id},
+//       include: [db.post]
+//     }).then( function(user){
+//     //   console.log(user)
+//       db.post.update({
+          
+//           where: {
+//               id:req.params.id,
+//               userId: user.id
+//           }
+//         }).then(function(pics) {
+//           res.redirect('users/show');
+//       })
+//     })
+//   });
+
+//   app.put('/dinosaurs/:id', function(req, res){
+//     // let dinosaurs = fs.readFileSync('./dinosaurs.json');
+//     // let dinoData = JSON.parse(dinosaurs);
+//     // var id = parseInt(req.params.id);
+//     // dinoData[id].name = req.body.dinosaurName;
+//     // dinoData[id].type = req.body.dinosaurType;
+//     // fs.writeFileSync('./dinosaurs.json', JSON.stringify(dinoData));
+//     db.parentdino.update({
+//         name:req.body.dinosaurName,
+//         type:req.body.dinosaurType
+//     }, {
+//         where:{id: parseInt(req.params.id)}
+//     })
+//     res.redirect("/dinosaurs/"+ id);
+// })
   
   router.post('/', upload.single('myFile'), function(req, res){
     cloudinary.uploader.upload(req.file.path, function(result){ //!why do we need a function when uploading? async request

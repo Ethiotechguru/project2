@@ -6,7 +6,7 @@
 
  <!--cloudinary form -->
 <form enctype="multipart/form-data" action="/" method="POST">
-  <p><input type="text" name="caption" placeholder ='caption it'></p>
+  <p><input type="text" name="caption" placeholder ='Create Caption'></p>
   <input type="file" name="myFile">
   <input type="submit">
 </form>
@@ -14,7 +14,7 @@
 <% pics.forEach(function(pic){%>
         <% if(typeof pic.image == 'string' && pic.image ){ %>
         <img style="max-width: 100%;" src="<%= pic.image %>">
-        <p><%= pic.caption %></p>
+        <h3 style= "font-family: 'Niconne';"><%= pic.caption %></h3>
         <%}else{%>
         <p>You need to Upload</p>
         <%}%>
@@ -23,8 +23,11 @@
       <form method="POST" action= "/users/<%= pic.id %>/?_method=DELETE">
         <input type="submit" value="DELETE">
       </form>
+
+
+      <!-- UPDATE FORM-->
       <form method="POST" action= "/users/<%= pic.id %>/?_method=PUT">
-       <input type="hidden" name="_method" value="PUT">
+        <input style= "font-family: 'Niconne';" type="text" name="caption" placeholder="Update Caption">
         <input type="submit" value="Update">
       </form>
 
@@ -40,7 +43,7 @@
         <div class="container-fluid">
         <div class="col-md-8">
           <% pic.comments.forEach(function(comment){ %>
-            <ul><li><h2 style= "font-family: 'Niconne';"><%= comment.name%></h2><ul style ="list-style-type: none;"><li>
+            <ul><li><h3 style= "font-family: 'Niconne';"><%= comment.name%></h3><ul style ="list-style-type: none;"><li>
             <hr>
             <p style ="list-style-type: none; font-family: 'Kaushan Script', cursive; , cursive; font-size:1.3em"><%= comment.comment%></p>
             <hr>

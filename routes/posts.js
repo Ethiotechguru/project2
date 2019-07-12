@@ -40,6 +40,8 @@ router.get('/users/:id', isLoggedIn, function(req, res) {
       })
     })
   });
+
+
   router.delete('/users/:id', isLoggedIn, function(req, res) {
     db.user.findOne({
       where: {id:req.user.id},
@@ -57,19 +59,18 @@ router.get('/users/:id', isLoggedIn, function(req, res) {
     })
   });
 
+  // localhost 3000/posts/:id
   router.put('/users/:id', isLoggedIn, function(req, res) {
     db.user.findOne({
       where: {id:req.user.id},
       include: [db.post]
     }).then( function(user){
-    //   console.log(user)
+      // console.log("Hello user",user.id)
       db.post.update({
-        caption: req.body.caption,
-        userId: parseInt(req.user.id)
+        caption: req.body.caption
       },{
       where:{
-            id:req.params.id,
-            userId: user.id
+            id:req.params.id
             }
         }).then(function(pics) {
           res.redirect('/users/' + req.user.id);
